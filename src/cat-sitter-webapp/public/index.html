@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sensor Data Chart</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
+</head>
+<body>
+  <center><img src="/cat-sitter.jpeg" alt="Cat Sitter" style="width: 100px; height: auto; ;"></center>
+  <canvas id="sensorChart" width="400" height="200"></canvas>
+
+  <script>
+    async function fetchData() {
+      const response = await fetch('/chart');
+      const data = await response.json();
+
+      //const timestamps = data.map(entry => new Date(entry.timestamp).toLocaleTimeString());
+      const timestamps = data.map(entry => entry.timestamp);
+      const temps = data.map(entry => entry.temp);
+      const humidities = data.map(entry => entry.humidity);
+      const forbiddens = data.map(entry => entry.forbidden);
+
+      const ctx = document.getElementById('sensorChart').getContext('2d');
+      //const momentTimestamps = timestamps.map(timestamp => moment(timestamp * 1000));
+      const momentTimestamps = timestamps.map(timestamp => moment(timestamp));
+      const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: momentTimestamps,
+          datasets: [
+            {
+              label: 'Temperature',
+              data: temps,
+              borderColor: 'red',
+              borderWidth: 1,
+              fill: false,
+            },
+            {
+              label: 'Humidity',
+              data: humidities,
+              borderColor: 'blue',
+              borderWidth: 1,
+              fill: false,
+            },
+            {
+              label: 'Cat near fireplace',
+              data: momentTimestamps.map((timestamp, index) => ({
+                  x: timestamp,
+                  y: forbiddens[index] ? 1 : null, // Use 1 for events, null for non-events
+              })),
+              pointRadius: 5,
+              pointHoverRadius: 10,
+              showLine: false,
+              backgroundColor: 'rgba(255, 0, 0, 0.5)',
+            },
+          ],
+        },
+        options: {
+          scales: {
+            x: {
+              type: 'time',
+              time: {
+                unit: 'second',
+              },
+              position: 'bottom',
+            },
+          },
+        },
+      });
+    }
+
+    fetchData();
+  </script>
+  <a href="/chart">Raw Data</a>
+</body>
+</html>

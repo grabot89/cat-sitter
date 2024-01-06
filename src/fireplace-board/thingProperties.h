@@ -8,13 +8,16 @@ const char PASS[]     = SECRET_OPTIONAL_PASS;    // Network password (use for WP
 
 void onAlarmChange();
 
+
 String message;
 bool alarm;
+bool trigger;
 
 void initProperties(){
 
   ArduinoCloud.addProperty(message, READ, ON_CHANGE, NULL);
   ArduinoCloud.addProperty(alarm, READWRITE, ON_CHANGE, onAlarmChange);
+  ArduinoCloud.addProperty(trigger, READWRITE, ON_CHANGE, onTriggerChange);
 
 }
 

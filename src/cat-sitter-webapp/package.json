@@ -1,0 +1,17 @@
+{
+  "name": "cat-sitter-webapp",
+  "version": "1.0.0",
+  "description": "Web App to visualize sensor data",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chart.js": "^4.4.1",
+    "express": "^4.18.2",
+    "mongoose": "^8.0.3",
+    "mqtt": "^5.3.4"
+  }
+}
