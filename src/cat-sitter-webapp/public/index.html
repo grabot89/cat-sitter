@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sensor Data Chart</title>
+  <title>Cat-Sitter Sensor Data Chart</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/moment"></script>
 
@@ -18,31 +18,51 @@
       const response = await fetch('/chart');
       const data = await response.json();
 
+      const datasets = {};
+
       //const timestamps = data.map(entry => new Date(entry.timestamp).toLocaleTimeString());
       const timestamps = data.map(entry => entry.timestamp);
-      const temps = data.map(entry => entry.temp);
-      const humidities = data.map(entry => entry.humidity);
+      const tempF = data.filter(entry => entry.deviceID === 'Fireplace').map(entry => entry.temp);
+      const tempH = data.filter(entry => entry.deviceID === 'Hallway').map(entry => entry.temp);
+      const humidityF = data.filter(entry => entry.deviceID === 'Fireplace').map(entry => entry.humidity);
+      const humidityH = data.filter(entry => entry.deviceID === 'Hallway').map(entry => entry.humidity);
       const forbiddens = data.map(entry => entry.forbidden);
+      const momentTimestamps = timestamps.map(timestamp => moment(timestamp));
+
+      console.log("Datasets: ", datasets);
 
       const ctx = document.getElementById('sensorChart').getContext('2d');
-      //const momentTimestamps = timestamps.map(timestamp => moment(timestamp * 1000));
-      const momentTimestamps = timestamps.map(timestamp => moment(timestamp));
       const chart = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: momentTimestamps,
-          datasets: [
+            labels: momentTimestamps, // Assuming you don't need labels on the x-axis
+            //datasets: Object.values(datasets),
+            datasets: [
             {
-              label: 'Temperature',
-              data: temps,
+              label: 'Temperature Hallway',
+              data: tempH,
               borderColor: 'red',
               borderWidth: 1,
               fill: false,
             },
             {
-              label: 'Humidity',
-              data: humidities,
+              label: 'Temperature Fireplace',
+              data: tempF,
+              borderColor: 'orange',
+              borderWidth: 1,
+              fill: false,
+            },
+            {
+              label: 'Humidity Hallway',
+              data: humidityH,
               borderColor: 'blue',
+              borderWidth: 1,
+              fill: false,
+            },
+            {
+              label: 'Humidity Fireplace',
+              data: humidityF,
+              borderColor: 'green',
               borderWidth: 1,
               fill: false,
             },
@@ -60,15 +80,15 @@
           ],
         },
         options: {
-          scales: {
-            x: {
-              type: 'time',
-              time: {
-                unit: 'second',
-              },
-              position: 'bottom',
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'minute',
+                    },
+                    position: 'bottom',
+                },
             },
-          },
         },
       });
     }
