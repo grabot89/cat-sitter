@@ -1,0 +1,2 @@
+This code is based off the wokwi submitted project for a arduino safe, I have slightly adapted it to use for my cat security solution but am not claiming credit for writing the original code, I had enormous issues with my keypad and needed to pivot and simulate the board with the end result that I could not send messages to queue so this code does not interact with the rest of the project as I had hoped.
+https://wokwi.com/projects/344891391763022419
